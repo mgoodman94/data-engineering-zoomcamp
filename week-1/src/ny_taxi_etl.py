@@ -1,12 +1,22 @@
-import pandas as pd
+"""Dockerized ETL for NYC Taxi data """
 import argparse
+import logging
 
-from time import time
-from sqlalchemy import create_engine
+from time import perf_counter
 from math import ceil
+from sqlalchemy import create_engine
+
+import pandas as pd
 
 
 class TaxiLoad:
+    """
+    Taxi ETL class
+
+    :param trip_filepath: taxi trip filepath
+    :param zone_filepath: taxi zone lookup filepath
+    :param engine: sql engine object
+    """
     def __init__(self, trip_filepath, zone_filepath, engine):
         self.trip_filepath = trip_filepath
         self.zone_filepath = zone_filepath
@@ -20,7 +30,7 @@ class TaxiLoad:
         """
         Get file row count and extract data into a dataframe
         """
-        self.file_size = sum(1 for row in open(self.trip_filepath, 'r'))
+        self.file_size = sum(1 for row in open(self.trip_filepath, 'r', encoding="utf8"))
         self.raw_trip_df = pd.read_csv(self.trip_filepath, iterator=True, chunksize=self.chunksize)
         self.raw_zone_df = pd.read_csv(self.zone_filepath)
 
@@ -31,7 +41,7 @@ class TaxiLoad:
         chunk.tpep_pickup_datetime = pd.to_datetime(chunk.tpep_pickup_datetime)
         chunk.tpep_pickup_datetime = pd.to_datetime(chunk.tpep_dropoff_datetime)
         return chunk
-    
+
     def load_zone_sql(self):
         """
         Load taxi zone data into sql using any sql engine
@@ -48,16 +58,18 @@ class TaxiLoad:
         total_chunks = ceil(self.file_size / self.chunksize)
         runtime = 0
         for i in range(total_chunks):
-            t_start = time()
+            t_start = perf_counter()
             chunk = next(self.raw_trip_df)
             transformed_chunk = self.transform_data(chunk)
             transformed_chunk.to_sql(
                 name='yellow_taxi_data',
                 con=self.engine,
                 if_exists='append')
-            t_end = time()
+            t_end = perf_counter()
             runtime += (t_end - t_start)
-            print(f"Chunk {i+1} / {total_chunks} inserted (elapsed time: {round(runtime, 1)} seconds")
+            msg = f"Chunk {i+1} / {total_chunks} inserted \
+                (elapsed time: {round(runtime, 1)} seconds"
+            logging.info(msg)
 
 
 def main(trip_file, zone_file):
@@ -83,5 +95,3 @@ if __name__ == "__main__":
     parser.add_argument('--zone_file', help='zone file in ny_taxi_data/ to extract')
     args = parser.parse_args()
     main(args.trip_file, args.zone_file)
-
-
