@@ -2,3 +2,6 @@
 week-1/src/ny_taxi_data/yellow_tripdata_2022-01.csv
 **/.DS_Store
 .vscode/
+**logs/
+**.env
+**__pycache__/
