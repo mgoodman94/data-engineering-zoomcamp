@@ -9,3 +9,4 @@ google_credentials.json
 *.tfstate.*
 .idea
 *.tfstate
+.DS_Store
