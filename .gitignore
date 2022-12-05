@@ -5,3 +5,7 @@ week-1/src/ny_taxi_data/yellow_tripdata_2022-01.csv
 **logs/
 **.env
 **__pycache__/
+google_credentials.json
+*.tfstate.*
+.idea
+*.tfstate

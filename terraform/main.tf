@@ -42,3 +42,23 @@ resource "google_bigquery_dataset" "dataset" {
   project = var.project
   location = var.region
 }
+
+resource "google_bigquery_table" "external_table" {
+  depends_on = [
+    google_bigquery_dataset.dataset
+  ]
+  dataset_id = var.bq_dataset
+  table_id   = var.table_name
+  external_data_configuration {
+    autodetect    = false
+    source_uris   = ["gs://${google_storage_bucket.data-lake-bucket.name}/taxi_data/*"]
+    source_format = "CSV"
+
+    csv_options{
+      quote = ""
+      skip_leading_rows = 1
+    }
+  }
+
+  schema = file("./schema/ny_trips_schema.json")
+}

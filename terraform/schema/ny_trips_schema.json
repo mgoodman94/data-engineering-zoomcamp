@@ -1,0 +1,97 @@
+[
+    {
+      "name": "VendorID",
+      "type": "INT64",
+      "mode": "NULLABLE"
+    },
+    {
+      "name": "tPepPickupDatetime",
+      "type": "DATETIME",
+      "mode": "NULLABLE"
+    },
+    {
+      "name": "tPepDropoffDatetime",
+      "type": "DATETIME",
+      "mode": "NULLABLE"
+    },
+    {
+      "name": "PassengerCount",
+      "type": "FLOAT64",
+      "mode": "NULLABLE"
+    },
+    {
+      "name": "TripDistance",
+      "type": "FLOAT64",
+      "mode": "NULLABLE"
+    },
+    {
+      "name": "RateCodeID",
+      "type": "FLOAT64",
+      "mode": "NULLABLE"
+    },
+    {
+      "name": "StoreAndFwdFlag",
+      "type": "STRING",
+      "mode": "NULLABLE"
+    },
+    {
+      "name": "PULocationID",
+      "type": "INT64",
+      "mode": "NULLABLE"
+    },
+    {
+      "name": "DOLocationID",
+      "type": "INT64",
+      "mode": "NULLABLE"
+    },
+    {
+      "name": "PaymentType",
+      "type": "INT64",
+      "mode": "NULLABLE"
+    },
+    {
+      "name": "FareAmount",
+      "type": "FLOAT64",
+      "mode": "NULLABLE"
+    },
+    {
+      "name": "Extra",
+      "type": "FLOAT64",
+      "mode": "NULLABLE"
+    },
+    {
+      "name": "MtaTax",
+      "type": "FLOAT64",
+      "mode": "NULLABLE"
+    },
+    {
+      "name": "TipAmount",
+      "type": "FLOAT64",
+      "mode": "NULLABLE"
+    },
+    {
+      "name": "TollsAmount",
+      "type": "FLOAT64",
+      "mode": "NULLABLE"
+    },
+    {
+      "name": "ImprovementSurcharge",
+      "type": "FLOAT64",
+      "mode": "NULLABLE"
+    },
+    {
+      "name": "TotalAmount",
+      "type": "FLOAT64",
+      "mode": "NULLABLE"
+    },
+    {
+      "name": "CongestionSurcharge",
+      "type": "FLOAT64",
+      "mode": "NULLABLE"
+    },
+    {
+      "name": "AirportFee",
+      "type": "FLOAT64",
+      "mode": "NULLABLE"
+    }
+]
