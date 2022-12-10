@@ -28,18 +28,6 @@ variable "bq_dataset" {
   default = "trips_data"
 }
 
-variable "bq_dataset_dbt" {
-  description = "BigQuery Dataset that will have DBT models"
-  type = string
-  default = "dbt_models"
-}
-
-variable "bq_dataset_prod" {
-  description = "BigQuery Dataset that will have production data"
-  type = string
-  default = "trips_data_prod"
-}
-
 variable "table_name" {
   description = "BigQuery Table"
   type = string

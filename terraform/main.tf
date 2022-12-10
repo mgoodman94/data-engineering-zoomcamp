@@ -43,18 +43,6 @@ resource "google_bigquery_dataset" "dataset" {
   location = var.region
 }
 
-resource "google_bigquery_dataset" "dbt_dataset" {
-  dataset_id = var.bq_dataset_dbt
-  project = var.project
-  location = var.region
-}
-
-resource "google_bigquery_dataset" "prod_dataset" {
-  dataset_id = var.bq_dataset_prod
-  project = var.project
-  location = var.region
-}
-
 resource "google_bigquery_table" "external_table" {
   depends_on = [
     google_bigquery_dataset.dataset
