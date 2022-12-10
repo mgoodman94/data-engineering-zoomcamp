@@ -15,14 +15,18 @@ class TaxiLoad:
     :param trip_filepath: taxi trip filepath
     :param zone_filepath: taxi zone lookup filepath
     :param engine: sql engine object
+    :param table_name: taxi table name
+    :param zone_table_name: zone table name
     """
-    def __init__(self, trip_filepath, engine, table_name):
+    def __init__(self, trip_filepath, zone_filepath, engine, table_name, zone_table_name):
         self.trip_filepath = trip_filepath
+        self.zone_filepath = zone_filepath
         self.engine = engine
         self.file_size = None
         self.chunksize = 100000
         self.raw_trip_df = None
         self.table_name = table_name
+        self.zone_table_name = zone_table_name
 
     def load_data_to_dataframe(self):
         """
@@ -45,7 +49,8 @@ class TaxiLoad:
         """
         total_chunks = ceil(self.file_size / self.chunksize)
         runtime = 0
-        logging.info(f"Loading to {self.table_name} has begun...")
+        log = f"Loading to {self.table_name} has begun..."
+        logging.info(log)
         for i in range(total_chunks):
             t_start = perf_counter()
             chunk = next(self.raw_trip_df)
@@ -55,8 +60,9 @@ class TaxiLoad:
                     name=self.table_name,
                     con=self.engine,
                     if_exists='append')
-            except Exception as e:
-                logging.warning(f"Load to table failed, continuing to next chunk. Reason: {str(e)}")
+            except Exception as msg:
+                log = f"Load to table failed, continuing to next chunk. Reason: {str(msg)}"
+                logging.warning(log)
                 continue
             t_end = perf_counter()
             runtime += (t_end - t_start)
@@ -64,8 +70,25 @@ class TaxiLoad:
                 (elapsed time: {round(runtime, 1)} seconds"
             logging.info(msg)
 
+    def load_zone_data(self):
+        """
+        Load zone lookup data
+        """
+        zone_df = pd.read_csv(self.zone_filepath)
+        try:
+            zone_df.to_sql(
+                name=self.zone_table_name,
+                con=self.engine,
+                if_exists='replace'
+            )
+            logging.info("Zone extract was successful.")
+        except Exception as msg:
+            logging.error("Zone load failed")
+            raise Exception(str(msg))
 
-def ingest_postgres(user, password, host, port, db, table_name, file):
+
+
+def ingest_postgres(user, password, host, port, database, table_name, zone_table_name, file, zone_file):
     """
     Entrypoint for ny taxi load to postgres
 
@@ -73,15 +96,20 @@ def ingest_postgres(user, password, host, port, db, table_name, file):
     :param password: postgres password
     :param host: engine host
     :param port: postgres port
-    :param db: postgres database
-    :param table_name: postgres table
-    :param file: trip file name to be extracted
+    :param database: postgres database
+    :param table_name: taxi postgres table
+    :param zone_table_name: taxi zone table
+    :param file: trip file name to be loaded
+    :param zone_file: zone file name to be loaded
     :param bucket: gcp bucket name
     """
     taxi = TaxiLoad(
         trip_filepath=file,
-        engine = create_engine(f'postgresql://{user}:{password}@{host}:{port}/{db}'),
+        zone_filepath=zone_file,
+        engine = create_engine(f'postgresql://{user}:{password}@{host}:{port}/{database}'),
         table_name=table_name,
+        zone_table_name=zone_table_name
     )
     taxi.load_data_to_dataframe()
     taxi.load_trip_sql()
+    taxi.load_zone_data()

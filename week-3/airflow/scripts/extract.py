@@ -2,28 +2,41 @@
 import os
 import logging
 import pandas as pd
-from datetime import datetime
 
 logging.basicConfig(level=logging.INFO)
 
-DATA_URL_BASE = "https://d37ci6vzurychx.cloudfront.net/trip-data/"
-DATA_URL_SUFFIX = f"yellow_tripdata_{datetime.now().strftime('%Y-%m')}.parquet"
 OUTPUT_PATH = os.getenv('OUTPUT_PATH')
-TEST_URL = "https://d37ci6vzurychx.cloudfront.net/trip-data/yellow_tripdata_2022-01.parquet"
+ZONE_OUTPUT_PATH = os.getenv('ZONE_OUTPUT_PATH')
+TAXI_URL = "https://d37ci6vzurychx.cloudfront.net/trip-data/yellow_tripdata_2022-03.parquet"
+ZONE_URL = "https://d37ci6vzurychx.cloudfront.net/misc/taxi+_zone_lookup.csv"
+
 
 def extract_taxi_data():
     """
     extract parqeut file and save as csv
     """
     if not os.path.exists(OUTPUT_PATH):
-        logging.info(f"Attempting to extract file: {TEST_URL}")
+        log = f"Attempting to extract file: {TAXI_URL}"
+        logging.info(log)
         try:
-            data = pd.read_parquet(TEST_URL)
+            data = pd.read_parquet(TAXI_URL)
             data.to_csv(OUTPUT_PATH, index=False)
-            logging.info("Extraction Successful")
-        except Exception as e:
-            logging.error(f"Exception: {str(e)}")
-            logging.error("Failed to extract the file. Ensure URL exists")
-            raise Exception(str(e))
+            logging.info("Taxi Extraction Successful")
+        except Exception as msg:
+            logging.error("Failed to extract the taxi file. Ensure URL exists")
+            raise Exception(str(msg))
     else:
-        logging.info("File already exists. Moving to Load")
+        logging.info("Trip File already exists. Moving to next file")
+
+    if not os.path.exists(ZONE_OUTPUT_PATH):
+        log = f"Attempting to extract file: {ZONE_URL}"
+        logging.info(log)
+        try:
+            data = pd.read_csv(ZONE_URL)
+            data.to_csv(ZONE_OUTPUT_PATH, index=False)
+            logging.info("Zone Extraction Successful")
+        except Exception as msg:
+            logging.error("Failed to extract the zone file. Ensure URL exists")
+            raise Exception(str(msg))
+    else:
+        logging.info("Zone File already exists. Moving to Load")

@@ -32,9 +32,11 @@ with local_workflow:
             password=os.getenv('PG_PASSWORD'),
             host=os.getenv('PG_HOST'),
             port=os.getenv('PG_PORT'),
-            db=os.getenv('PG_DATABASE'),
+            database=os.getenv('PG_DATABASE'),
             table_name='ny_taxi',
-            file=os.getenv('OUTPUT_PATH')
+            zone_table_name='zones',
+            file=os.getenv('OUTPUT_PATH'),
+            zone_file=os.getenv('ZONE_OUTPUT_PATH')
         )
     )
 
@@ -43,6 +45,7 @@ with local_workflow:
         python_callable=ingest_gcp,
         op_kwargs=dict(
             file=os.getenv('OUTPUT_PATH'),
+            zone_file=os.getenv('ZONE_OUTPUT_PATH'),
             bucket=os.getenv('BUCKET_NAME'),
             dataset_id=os.getenv("DATASET_ID")
         )

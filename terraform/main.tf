@@ -43,6 +43,18 @@ resource "google_bigquery_dataset" "dataset" {
   location = var.region
 }
 
+resource "google_bigquery_dataset" "dbt_dataset" {
+  dataset_id = var.bq_dataset_dbt
+  project = var.project
+  location = var.region
+}
+
+resource "google_bigquery_dataset" "prod_dataset" {
+  dataset_id = var.bq_dataset_prod
+  project = var.project
+  location = var.region
+}
+
 resource "google_bigquery_table" "external_table" {
   depends_on = [
     google_bigquery_dataset.dataset
@@ -61,4 +73,24 @@ resource "google_bigquery_table" "external_table" {
   }
 
   schema = file("./schema/ny_trips_schema.json")
+}
+
+resource "google_bigquery_table" "external_zone_table" {
+  depends_on = [
+    google_bigquery_dataset.dataset
+  ]
+  dataset_id = var.bq_dataset
+  table_id   = var.zone_table_name
+  external_data_configuration {
+    autodetect    = false
+    source_uris   = ["gs://${google_storage_bucket.data-lake-bucket.name}/zone_data/*"]
+    source_format = "CSV"
+
+    csv_options{
+      quote = ""
+      skip_leading_rows = 1
+    }
+  }
+
+  schema = file("./schema/zones_schema.json")
 }

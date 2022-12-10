@@ -1,0 +1,22 @@
+[
+    {
+      "name": "LocationID",
+      "type": "INT64",
+      "mode": "NULLABLE"
+    },
+    {
+      "name": "Borough",
+      "type": "STRING",
+      "mode": "NULLABLE"
+    },
+    {
+      "name": "Zone",
+      "type": "STRING",
+      "mode": "NULLABLE"
+    },
+    {
+      "name": "ServiceZone",
+      "type": "STRING",
+      "mode": "NULLABLE"
+    }
+]
