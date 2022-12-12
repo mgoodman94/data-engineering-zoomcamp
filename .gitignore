@@ -1,4 +1,5 @@
 **/.terraform*
+ny_taxi_data/
 week-1/src/ny_taxi_data/yellow_tripdata_2022-01.csv
 **/.DS_Store
 .vscode/
