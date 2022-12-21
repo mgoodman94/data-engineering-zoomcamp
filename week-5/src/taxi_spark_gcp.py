@@ -40,13 +40,6 @@ class Taxi:
                         .schema(trip_schema) \
                         .load(self.trip_filepath)
 
-    def print_head(self):
-        """
-        Show head of dataframe
-        """
-        for row in self.raw_zone_spark_df.head(10):
-            print(row)
-
 
 def set_up_gcp_connection():
     """
