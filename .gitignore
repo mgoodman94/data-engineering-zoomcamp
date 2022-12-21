@@ -11,3 +11,4 @@ google_credentials.json
 .idea
 *.tfstate
 .DS_Store
+gcs-connector-hadoop3-2.2.5.jar

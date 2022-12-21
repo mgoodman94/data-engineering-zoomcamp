@@ -1,5 +1,6 @@
 """ Spark Demo """
 from pyspark.sql import SparkSession
+from pyspark.sql import functions as F
 from schema import zone_schema, trip_schema
 
 
@@ -39,6 +40,26 @@ class Taxi:
         for row in self.raw_zone_spark_df.head(10):
             print(row)
 
+    def run_sql_select(self):
+        """
+        Run various sql queries on taxi & zone data
+        """
+        # create temp table so the data is queryable
+        self.raw_trip_spark_df.registerTempTable('TripsData')
+
+        self.spark.sql(
+            """
+            select * from TripsData limit 10;
+            """
+        ).show()
+
+    def run_sql_join(self):
+        """
+        Join 2 tables using Spark's join method
+        """
+        df_join = self.raw_trip_spark_df.join(self.raw_zone_spark_df.withColumn("DOLocationID", F.col("LocationID")), on="DOLocationID")
+        print(df_join[["Zone", "fare_amount"]].show())
+
 
 
 def run_spark():
@@ -58,6 +79,11 @@ def run_spark():
     # explore
     print(taxi.raw_trip_spark_df.printSchema())
     print(taxi.raw_zone_spark_df.show())
+    print(taxi.raw_trip_spark_df.columns)
+
+    # run sql
+    taxi.run_sql_select()
+    taxi.run_sql_join()
 
 
 if __name__ == "__main__":

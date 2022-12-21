@@ -25,15 +25,6 @@ resource "google_storage_bucket" "data-lake-bucket" {
     enabled = true
   }
 
-  lifecycle_rule {
-    condition {
-      age = 3
-    }
-    action {
-      type = "Delete"
-    }
-  }
-
   force_destroy = true
 }
 
