@@ -1,0 +1,11 @@
+{
+    "namespace": "data.engineering.zoomcamp",
+    "type": "record",
+    "name": "TaxiRideKey",
+    "fields": [
+        {
+            "name": "vendorId",
+            "type": "int"
+        }
+    ]
+}
